@@ -1,8 +1,27 @@
 # email-validator-strict
 
 [![npm version](https://badge.fury.io/js/email-validator-strict.svg)](https://badge.fury.io/js/email-validator-strict)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](./LICENSE)
+<!-- [![Build Status](https://github.com/venkatajanapareddy/email-validator-strict/actions/workflows/ci.yml/badge.svg)](https://github.com/venkatajanapareddy/email-validator-strict/actions) -->
 
 A TypeScript library for strict email address validation, including optional DNS MX record checks and configurable syntax modes.
+
+---
+
+## Table of Contents
+- [Features](#features)
+- [Installation](#installation)
+- [Basic Usage (Real-world Mode)](#basic-usage-real-world-mode)
+- [Detailed Usage & Options](#detailed-usage--options)
+- [Edge Case Examples](#edge-case-examples)
+- [TypeScript Usage](#typescript-usage)
+- [Performance & Security Notes](#performance--security-notes)
+- [Development](#development)
+- [Contributing](#contributing)
+- [License](#license)
+- [References](#references)
+
+---
 
 ## Features
 
@@ -127,59 +146,46 @@ console.log(await validateEmailStrict('test@-example.com', rfcOptions)); // => t
 console.log(await validateEmailStrict('test@[IPv6:::1]', rfcOptions)); // => true (Warning: lenient)
 ```
 
-### Checking Domain MX Records (`checkDomain: true`)
+## Edge Case Examples
 
-Set `checkDomain` to `true` to perform a DNS MX lookup **after** the syntax check (respecting the chosen `validationMode`) passes.
+| Email Address                | Real-world Mode | RFC Mode |
+|------------------------------|:--------------:|:--------:|
+| test@example.com             |      ✅        |    ✅    |
+| test@localhost               |      ❌        |    ✅    |
+| "user name"@example.com      |      ❌        |    ✅    |
+| test@192.168.1.1             |      ❌        |    ✅    |
+| test@[192.168.1.1]           |      ❌        |    ✅    |
+| test@[IPv6:2001:db8::1]      |      ❌        |    ✅    |
+| test@example.c               |      ❌        |    ✅*   |
+| test@-example.com            |      ❌        |    ✅*   |
+| test@[IPv6:::1]              |      ❌        |    ✅*   |
+| test..user@example.com       |      ❌        |    ❌    |
+| test@.example.com            |      ❌        |    ❌    |
+| test@                        |      ❌        |    ❌    |
+| @example.com                 |      ❌        |    ❌    |
 
-**Important:** This requires network access. DNS lookups can be slow or fail. The function handles common DNS errors (`ENOTFOUND`, `ENODATA`, etc.) internally and returns `false`.
+*✅* = Valid in RFC mode, but not technically correct per the RFC; see [limitations](#syntax-validation-modes-validationmode).
+
+## TypeScript Usage
+
+You can use the exported types for full type safety:
 
 ```typescript
-import { validateEmailStrict } from 'email-validator-strict';
+import { validateEmailStrict, ValidatorOptions, ValidationMode } from 'email-validator-strict';
 
-async function checkEmailAndDomain(email: string, mode: 'real-world' | 'rfc' = 'real-world') {
-  try {
-    const isValid = await validateEmailStrict(email, {
-      checkDomain: true,
-      validationMode: mode,
-    });
-    if (isValid) {
-      console.log(`[${mode} Mode] ${email} has valid syntax AND its domain accepts mail.`);
-    } else {
-      console.log(`[${mode} Mode] ${email} is considered invalid (syntax or domain check failed).`);
-    }
-  } catch (error) {
-    if (error instanceof TypeError) {
-      console.error('Invalid input:', error.message);
-    }
-  }
-}
+const options: ValidatorOptions = {
+  checkDomain: true,
+  validationMode: 'real-world',
+};
 
-// Examples (requires network access - actual results may vary)
-
-// Real-world mode
-await checkEmailAndDomain('test@gmail.com', 'real-world'); // Likely valid
-await checkEmailAndDomain('test@localhost', 'real-world'); // Invalid (syntax fails)
-await checkEmailAndDomain('test@nonexistent-domain-12345.com', 'real-world'); // Invalid (DNS check fails)
-
-// RFC mode
-await checkEmailAndDomain('test@gmail.com', 'rfc'); // Likely valid
-await checkEmailAndDomain('test@localhost', 'rfc'); // Syntax valid, depends on local DNS/MX setup for localhost
-await checkEmailAndDomain('test@192.168.1.10', 'rfc'); // Syntax valid, likely fails DNS check
-await checkEmailAndDomain('test@nonexistent-xyz123.org', 'rfc'); // Invalid (DNS check fails)
+const isValid: boolean = await validateEmailStrict('user@example.com', options);
 ```
 
-### Validation Logic Summary
+## Performance & Security Notes
 
-1.  **Input Check:** Throws `TypeError` if input is not a string.
-2.  **Syntax Check:** Validates using the regex corresponding to `options.validationMode` (`'real-world'` or `'rfc'`).
-    *   If syntax is invalid, returns `false`.
-3.  **Domain Check (if `checkDomain: true`):**
-    *   Extracts the domain.
-    *   Performs `dns.promises.resolveMx(domain)`.
-    *   If MX records are found (array is not empty), returns `true`.
-    *   If no MX records are found or a DNS error occurs, returns `false`.
-4.  **Default (if `checkDomain: false` or omitted):**
-    *   If syntax (based on `validationMode`) is valid, returns `true`.
+- **DNS Checks:** If you enable `checkDomain`, the library performs a DNS MX lookup using Node.js's built-in DNS module. This requires network access and may be slow or fail if the network is unavailable or the DNS server is slow/unresponsive.
+- **Privacy:** No email addresses are sent to any third-party servers; DNS lookups are performed locally using your system's resolver.
+- **Regex Limitations:** Regex-based validation cannot fully guarantee RFC compliance. For the strictest needs, consider using a full parser or additional validation steps.
 
 ## Development
 
@@ -197,4 +203,14 @@ Contributions are welcome! Please open issues or pull requests.
 
 ## License
 
-[MIT](./LICENSE) 
+[MIT](./LICENSE)
+
+## References
+
+- [RFC 5322: Internet Message Format](https://datatracker.ietf.org/doc/html/rfc5322)
+- [MDN: Email address syntax](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/input/email#validation)
+- [Wikipedia: Email address](https://en.wikipedia.org/wiki/Email_address)
+
+---
+
+> This project follows [Semantic Versioning](https://semver.org/).
