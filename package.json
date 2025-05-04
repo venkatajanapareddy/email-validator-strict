@@ -22,7 +22,7 @@
     "build:esm": "tsc -p tsconfig.json",
     "build:cjs": "tsc -p tsconfig.cjs.json && mv dist/cjs/index.js dist/cjs/index.cjs",
     "build": "rm -rf dist && npm run build:esm && npm run build:cjs",
-    "test": "vitest",
+    "test": "vitest run",
     "test:run": "vitest run",
     "test:coverage": "vitest run --coverage",
     "test:watch": "vitest",
@@ -43,12 +43,12 @@
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/venkatajanapareddy/email-validator-strict.git" 
+    "url": "git+https://github.com/venkatajanapareddy/email-validator-strict.git"
   },
   "bugs": {
-    "url": "https://github.com/venkatajanapareddy/email-validator-strict/issues" 
+    "url": "https://github.com/venkatajanapareddy/email-validator-strict/issues"
   },
-  "homepage": "https://github.com/venkatajanapareddy/email-validator-strict#readme", 
+  "homepage": "https://github.com/venkatajanapareddy/email-validator-strict#readme",
   "engines": {
     "node": ">=16"
   },
@@ -65,4 +65,4 @@
     "vitest": "^1.0.0"
   },
   "dependencies": {}
-} 
+}
