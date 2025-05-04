@@ -2,7 +2,7 @@
 
 [![npm version](https://badge.fury.io/js/email-validator-strict.svg)](https://badge.fury.io/js/email-validator-strict)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](./LICENSE)
-<!-- [![Build Status](https://github.com/venkatajanapareddy/email-validator-strict/actions/workflows/ci.yml/badge.svg)](https://github.com/venkatajanapareddy/email-validator-strict/actions) -->
+[![Build Status](https://github.com/venkatajanapareddy/email-validator-strict/actions/workflows/ci.yml/badge.svg)](https://github.com/venkatajanapareddy/email-validator-strict/actions)
 
 A TypeScript library for strict email address validation, including optional DNS MX record checks and configurable syntax modes.
 
