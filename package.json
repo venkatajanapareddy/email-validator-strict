@@ -1,6 +1,6 @@
 {
   "name": "email-validator-strict",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Strict email address validator with optional DNS MX record check.",
   "type": "module",
   "main": "./dist/cjs/index.cjs",
