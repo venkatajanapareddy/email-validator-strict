@@ -1,0 +1,68 @@
+{
+  "name": "email-validator-strict",
+  "version": "1.0.0",
+  "description": "Strict email address validator with optional DNS MX record check.",
+  "type": "module",
+  "main": "./dist/cjs/index.cjs",
+  "module": "./dist/esm/index.js",
+  "types": "./dist/types/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/types/index.d.ts",
+      "import": "./dist/esm/index.js",
+      "require": "./dist/cjs/index.cjs"
+    }
+  },
+  "files": [
+    "dist",
+    "LICENSE",
+    "README.md"
+  ],
+  "scripts": {
+    "build:esm": "tsc -p tsconfig.json",
+    "build:cjs": "tsc -p tsconfig.cjs.json && mv dist/cjs/index.js dist/cjs/index.cjs",
+    "build": "rm -rf dist && npm run build:esm && npm run build:cjs",
+    "test": "vitest",
+    "test:run": "vitest run",
+    "test:coverage": "vitest run --coverage",
+    "test:watch": "vitest",
+    "lint": "eslint \"src/**/*.ts\" \"tests/**/*.ts\"",
+    "format": "prettier --write \"src/**/*.ts\" \"tests/**/*.ts\" *.json *.md *.cjs *.ts",
+    "prepublishOnly": "npm run lint && npm run test:run && npm run build"
+  },
+  "keywords": [
+    "email",
+    "validation",
+    "validator",
+    "strict",
+    "dns",
+    "mx",
+    "typescript"
+  ],
+  "author": "LibName Contributors",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/venkatajanapareddy/email-validator-strict.git" 
+  },
+  "bugs": {
+    "url": "https://github.com/venkatajanapareddy/email-validator-strict/issues" 
+  },
+  "homepage": "https://github.com/venkatajanapareddy/email-validator-strict#readme", 
+  "engines": {
+    "node": ">=16"
+  },
+  "devDependencies": {
+    "@types/node": "^18.0.0",
+    "@typescript-eslint/eslint-plugin": "^7.0.0",
+    "@typescript-eslint/parser": "^7.0.0",
+    "@vitest/coverage-v8": "^1.0.0",
+    "eslint": "^8.0.0",
+    "eslint-config-prettier": "^9.0.0",
+    "eslint-plugin-vitest-globals": "^1.5.0",
+    "prettier": "^3.0.0",
+    "typescript": "^5.0.0",
+    "vitest": "^1.0.0"
+  },
+  "dependencies": {}
+} 
